@@ -1,50 +1,37 @@
-using System;
 using System.Threading;
-using System.Diagnostics;
+using SourceLibrary;
 
-namespace asTest
+
+namespace TestProject
 {
-    class Base { }
-    interface ISomeInterface { }
 
-    class Implementing : Base, ISomeInterface { }
+    class Implementation : BaseClass, IInterface { }
 
-    class ImplementingByInheritance : Implementing { }
+    class ImplmentationByInheritance : Implementation { }
       
 
     public class Program
     {
 
-        static bool isImplementing(Base target)
-        {
-            if(target is ISomeInterface)
-            {
-                return true;
-            }
-            if(target as ISomeInterface != null)
-            {
-                return true;
-            }
-            return false;
-        }
-
-
         public static void Main()
         {
 
-            var testObject = new ImplementingByInheritance();
+            //this bug is not replicable if base class and interface are defined in executed project
+            //it happens when they are defined in separate library
 
-            var testObjeAsSI = testObject as ISomeInterface;
-            System.Console.WriteLine($"[{testObjeAsSI != null}] testObject is ISomeInterface");
-
-            var hereIsBug = isImplementing(testObject);
-            System.Console.WriteLine($"[{hereIsBug}] testObject is ISomeInterface");
+            var asImplementationByInheritance = new ImplmentationByInheritance();
+            Print(asImplementationByInheritance is IInterface, "ImplmentationByInheritance");
+            var asBaseClass = asImplementationByInheritance as BaseClass;
+            Print(asBaseClass is IInterface, "BaseClass");
+            
 
             Thread.Sleep(Timeout.Infinite);
 
-            // Browse our samples repository: https://github.com/nanoframework/samples
-            // Check our documentation online: https://docs.nanoframework.net/
-            // Join our lively Discord community: https://discord.gg/gCyBu8T
+            void Print(bool isTrue, string objectType)
+            {
+                var header = $"[{isTrue}]";
+                System.Console.WriteLine($"{header} the same object as {objectType} is IInterface");
+            }
         }
     }
 }
